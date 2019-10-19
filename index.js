@@ -1,15 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const app = express();
 
-app.use(bodyParser.json());
 const PORT = 3001;
 
-const unknownEndpoint = (request, response) => {
-   response.status(404).send({ error: 'unknown endpoint' })
- }
- 
- app.use(unknownEndpoint)
+app.use(bodyParser.json());
+
+morgan.token('data', (req, res) => {
+      return JSON.stringify(req.body);
+});
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data', {
+   skip: (req, res) => {
+      return req.method !== 'POST'
+   }
+}))
 
 let persons = [
    {
@@ -63,7 +68,6 @@ const generateId = () => {
 
 app.post('/api/persons', (req, res) => {
    const body = req.body;
-   console.log(body)
    if(!body) {
       return res.status(400).json({
          error: 'content missing',
@@ -79,7 +83,6 @@ app.post('/api/persons', (req, res) => {
          error: 'name must be unique',
       });
    }
-   
    const newPerson = {
       name: body.name,
       number: body.number,
@@ -89,7 +92,13 @@ app.post('/api/persons', (req, res) => {
    res.json(newPerson);
 });
 
+const unknownEndpoint = (request, response) => {
+   response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
 app.listen(PORT, () => {
-   console.log(`Server running on ${PORT}` );
+   console.log(`Server running on port ${PORT}` );
 })
 
