@@ -12,7 +12,7 @@ app.use(express.static('build'));
 app.use(bodyParser.json());
 
 morgan.token('data', (req, res) => {
-      return JSON.stringify(req.body);
+   return JSON.stringify(req.body);
 });
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data', {
@@ -21,26 +21,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :d
    }
 }))
 
-let persons = [
-   {
-     name: "Arto Hellas",
-     number: "040-123456",
-     id: 1
-   },
-   {
-     name: "Ada Lovelace",
-     number: "39-44-5323523",
-     id: 2
-   },
-   {
-     name: "Erick",
-     number: "5555",
-     id: 3
-   }
-
-];
-
-app.get('/info', (req,res) => {
+app.get('/info', (req, res) => {
    res.send(`<p>Phonebook has info for ${persons.length} people</p>
    <p>${new Date()}</p>`);
 });
@@ -58,14 +39,14 @@ app.get('/api/persons/:id', (req, res) => {
 });
 
 app.delete('/api/persons/:id', (req, res) => {
-   Person.findByIdAndDelete(req.params.id).then((resp) => {
+   Person.findByIdAndDelete(req.params.id).then(resp => {
       res.status(200).end();
    })
 });
 
 app.post('/api/persons', (req, res) => {
    const body = req.body;
-   if(!body) {
+   if (!body) {
       return res.status(400).json({
          error: 'content missing',
       });
@@ -75,18 +56,23 @@ app.post('/api/persons', (req, res) => {
          error: 'name or number is missing',
       });
    }
-   if(persons.find(person => person.name === body.name)) {
-      return res.status(400).json({
-         error: 'name must be unique',
-      });
-   }
    const newPerson = new Person({
       name: body.name,
       number: body.number,
    });
-   newPerson.save().then(savedNote => {
-      res.json(savedNote.toJSON());
+   newPerson.save().then(savedPerson => {
+      res.json(savedPerson.toJSON());
    })
+});
+
+app.put('/api/persons/:id', (req, res) => {
+   const body = req.body;
+   const newPerson = {
+      name: body.name,
+      number: body.number
+   }
+   Person.findByIdAndUpdate(req.params.id, newPerson, {new: true})
+   .then(updatedPerson => res.json(updatedPerson.toJSON()));
 });
 
 const unknownEndpoint = (request, response) => {
@@ -96,6 +82,6 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 app.listen(PORT, () => {
-   console.log(`Server running on port ${PORT}` );
+   console.log(`Server running on port ${PORT}`);
 })
 
