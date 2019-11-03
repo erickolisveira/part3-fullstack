@@ -1,0 +1,1 @@
+{"version":3,"sources":["Notification.css"],"names":[],"mappings":"AAAA,SACG,oBAAqB,CACrB,iBAAkB,CAClB,WAAY,CACZ,cAAe,CACf,iBAAkB,CAClB,SAAU,CACV,kBACH","file":"main.d9dcec05.chunk.css","sourcesContent":[".message {\n   border: 1px solid red;\n   border-radius: 5px;\n   padding: 5px;\n   font-size: 16px;\n   margin-bottom: 5px;\n   color: red;\n   background: lightgray;\n}"]}
