@@ -6,7 +6,7 @@ if (process.argv.length < 3 ) {
 }
 
 const password = process.argv[2];
-const url = `mongodb+srv://elderick:${password}@phonebook-yajra.mongodb.net/phonebook?retryWrites=true&w=majority`;
+const url = `mongodb://elderick:${password}@fullstack-shard-00-00-yajra.gcp.mongodb.net:27017,fullstack-shard-00-01-yajra.gcp.mongodb.net:27017,fullstack-shard-00-02-yajra.gcp.mongodb.net:27017/phonebook?ssl=true&replicaSet=Fullstack-shard-0&authSource=admin&retryWrites=true&w=majority`;
 mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true });
 
 const personSchema = new mongoose.Schema({
